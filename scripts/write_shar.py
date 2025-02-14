@@ -5,6 +5,7 @@ from lhotse.shar import SharWriter
 from tqdm import tqdm
 
 from lhotse_dataset import JVS, HQYouTube
+from lhotse_dataset.jvnv import JVNV
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -17,6 +18,8 @@ if __name__ == "__main__":
         corpus = JVS()
     elif args.corpus == "hq_youtube":
         corpus = HQYouTube(args.hq_youtube_tar_path)
+    elif args.corpus == "jvnv":
+        corpus = JVNV()
     else:
         raise ValueError(f"invalid corpus name: {args.corpus}")
 
