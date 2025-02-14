@@ -5,17 +5,6 @@ from typing import Generator
 import lhotse
 
 
-class BaseCorpus(metaclass=ABCMeta):
-    @property
-    @abstractmethod
-    def url(self) -> str:
-        pass
-
-    @abstractmethod
-    def get_cuts(self) -> Generator[lhotse.MonoCut, None, None]:
-        pass
-
-
 @enum.unique
 class Gender(enum.Enum):
     MALE = "male"
@@ -25,3 +14,19 @@ class Gender(enum.Enum):
 @enum.unique
 class Language(enum.Enum):
     JA = "ja"
+
+
+class BaseCorpus(metaclass=ABCMeta):
+    @property
+    @abstractmethod
+    def url(self) -> str:
+        pass
+
+    @property
+    @abstractmethod
+    def language(self) -> Language:
+        pass
+
+    @abstractmethod
+    def get_cuts(self) -> Generator[lhotse.MonoCut, None, None]:
+        pass
