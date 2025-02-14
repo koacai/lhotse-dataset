@@ -4,8 +4,7 @@ from pathlib import Path
 from lhotse.shar import SharWriter
 from tqdm import tqdm
 
-from lhotse_dataset import JVS, HQYouTube
-from lhotse_dataset.jvnv import JVNV
+from lhotse_dataset import JVNV, JVS, HQYouTube
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
