@@ -17,16 +17,6 @@ class Language(enum.Enum):
 
 
 class BaseCorpus(metaclass=ABCMeta):
-    @property
-    @abstractmethod
-    def url(self) -> str:
-        pass
-
-    @property
-    @abstractmethod
-    def language(self) -> Language:
-        pass
-
     @abstractmethod
     def get_cuts(self) -> Generator[lhotse.MonoCut, None, None]:
         pass
