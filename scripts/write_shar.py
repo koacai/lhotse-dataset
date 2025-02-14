@@ -4,16 +4,19 @@ from pathlib import Path
 from lhotse.shar import SharWriter
 from tqdm import tqdm
 
-from lhotse_dataset import JVS
+from lhotse_dataset import JVS, HQYouTube
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--corpus", type=str)
-    parser.add_argument("--output_dir", type=str)
+    parser.add_argument("--corpus", type=str, required=True)
+    parser.add_argument("--output_dir", type=str, required=True)
+    parser.add_argument("--hq_youtube_tar_path", type=str, required=False)
     args = parser.parse_args()
 
     if args.corpus == "jvs":
         corpus = JVS()
+    elif args.corpus == "hq_youtube":
+        corpus = HQYouTube(args.hq_youtube_tar_path)
     else:
         raise ValueError(f"invalid corpus name: {args.corpus}")
 
