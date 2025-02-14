@@ -253,6 +253,7 @@ source = { editable = "." }
 dependencies = [
     { name = "gdown" },
     { name = "lhotse" },
+    { name = "tqdm" },
 ]
 
 [package.dev-dependencies]
@@ -264,6 +265,7 @@ dev = [
 requires-dist = [
     { name = "gdown", specifier = ">=5.2.0" },
     { name = "lhotse", specifier = ">=1.29.0" },
+    { name = "tqdm", specifier = ">=4.67.1" },
 ]
 
 [package.metadata.requires-dev]
