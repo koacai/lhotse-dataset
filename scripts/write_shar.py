@@ -4,7 +4,7 @@ from pathlib import Path
 from lhotse.shar import SharWriter
 from tqdm import tqdm
 
-from lhotse_dataset import JIS, JVNV, JVS, HQYouTube
+from lhotse_dataset import JIS, JSUT, JVNV, JVS, HQYouTube
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -22,6 +22,8 @@ if __name__ == "__main__":
         corpus = JVNV()
     elif args.corpus == "jis":
         corpus = JIS(Path(args.jis_dir))
+    elif args.corpus == "jsut":
+        corpus = JSUT()
     else:
         raise ValueError(f"invalid corpus name: {args.corpus}")
 
