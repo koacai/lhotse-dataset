@@ -10,7 +10,7 @@ class TestJVS(unittest.TestCase):
     def setUp(self) -> None:
         self.jvs = JVS()
 
-    def test_get_audio_text_pair(self):
+    def test_get_cuts(self):
         gen = self.jvs.get_cuts()
         for cut in itertools.islice(gen, 3):
             audio = cut.load_audio()
