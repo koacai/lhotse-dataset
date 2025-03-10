@@ -6,7 +6,7 @@ import numpy as np
 from lhotse_dataset.jsut import JSUT
 
 
-class TestJVNV(unittest.TestCase):
+class TestJSUT(unittest.TestCase):
     def setUp(self) -> None:
         self.jsut = JSUT()
 
