@@ -4,7 +4,7 @@ from pathlib import Path
 from lhotse.shar import SharWriter
 from tqdm import tqdm
 
-from lhotse_dataset import JIS, JSUT, JVNV, JVS, HQYouTube
+from lhotse_dataset import JIS, JSUT, JVNV, JVS, HQYouTube, LibriSpeech
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -24,6 +24,8 @@ if __name__ == "__main__":
         corpus = JIS(Path(args.jis_dir))
     elif args.corpus == "jsut":
         corpus = JSUT()
+    elif args.corpus == "librispeech":
+        corpus = LibriSpeech()
     else:
         raise ValueError(f"invalid corpus name: {args.corpus}")
 

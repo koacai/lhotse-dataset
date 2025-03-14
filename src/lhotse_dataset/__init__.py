@@ -3,5 +3,6 @@ from lhotse_dataset.jis import JIS
 from lhotse_dataset.jsut import JSUT
 from lhotse_dataset.jvnv import JVNV
 from lhotse_dataset.jvs import JVS
+from lhotse_dataset.librispeech import LibriSpeech
 
-__all__ = ["HQYouTube", "JVNV", "JVS", "JIS", "JSUT"]
+__all__ = ["HQYouTube", "JVNV", "JVS", "JIS", "JSUT", "LibriSpeech"]
