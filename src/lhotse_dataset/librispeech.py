@@ -5,7 +5,7 @@ from typing import Generator
 
 import lhotse
 
-from lhotse_dataset.base import BaseCorpus, Language
+from lhotse_dataset.base import BaseCorpus, Gender, Language, SpeakerInfo
 from lhotse_dataset.utils import download_file
 
 
@@ -58,6 +58,27 @@ class LibriSpeech(BaseCorpus):
                         if member.name.endswith(".trans.txt")
                     ]
 
+                    speakers: dict[str, SpeakerInfo] = {}
+
+                    speakers_file = tar.extractfile("LibriSpeech/SPEAKERS.TXT")
+                    assert speakers_file is not None
+                    lines = speakers_file.read().decode().strip().split("\n")
+                    for line in lines:
+                        if line.startswith(";"):
+                            continue
+                        speaker_id = line.split("|")[0].strip()
+                        gender_str = line.split("|")[1].strip()
+                        name = "".join(line.split("|")[4:]).strip()
+                        if gender_str == "M":
+                            gender = Gender.MALE
+                        elif gender_str == "F":
+                            gender = Gender.FEMALE
+                        else:
+                            raise ValueError(f"invalid gender str: {gender_str}")
+                        speakers[speaker_id] = SpeakerInfo(
+                            id=speaker_id, name=name, gender=gender
+                        )
+
                     for trans_tarinfo in trans_tarinfos:
                         trans_file = tar.extractfile(trans_tarinfo)
                         assert trans_file is not None
@@ -65,6 +86,7 @@ class LibriSpeech(BaseCorpus):
 
                         for line in lines:
                             stem = line.split(" ")[0]
+                            speaker_id = stem.split("-")[0]
                             transcript = " ".join(line.split(" ")[1:])
                             audio_id = f"librispeech_{dataset_type}_{stem}"
 
@@ -86,7 +108,12 @@ class LibriSpeech(BaseCorpus):
                                 channel=0,
                                 text=transcript,
                                 language=self.language.value,
-                                custom={"dataset_type": dataset_type},
+                                speaker=speaker_id,
+                                gender=speakers[speaker_id].gender.value,
+                                custom={
+                                    "dataset_type": dataset_type,
+                                    "speaker_name": speakers[speaker_id].name,
+                                },
                             )
                             cut = lhotse.MonoCut(
                                 id=f"{audio_id}",
