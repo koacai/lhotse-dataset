@@ -24,11 +24,6 @@ class LibriSpeech(BaseCorpus):
             "train-clean-100": "https://www.openslr.org/resources/12/train-clean-100.tar.gz",
             "train-clean-360": "https://www.openslr.org/resources/12/train-clean-360.tar.gz",
             "train-other-500": "https://www.openslr.org/resources/12/train-other-500.tar.gz",
-            "intro-disclaimers": "https://www.openslr.org/resources/12/intro-disclaimers.tar.gz",
-            "original-mp3": "https://www.openslr.org/resources/12/original-mp3.tar.gz",
-            "original-books": "https://www.openslr.org/resources/12/original-books.tar.gz",
-            "raw-metadata": "https://www.openslr.org/resources/12/raw-metadata.tar.gz",
-            "md5sum": "https://www.openslr.org/resources/12/md5sum.txt",
         }
 
     @property
@@ -36,20 +31,10 @@ class LibriSpeech(BaseCorpus):
         return Language.EN
 
     def get_cuts(self) -> Generator[lhotse.MonoCut, None, None]:
-        dataset_types = [
-            "dev-clean",
-            "dev-other",
-            "test-clean",
-            "test-other",
-            "train-clean-100",
-            "train-clean-360",
-            "train-other-500",
-        ]
-
-        for dataset_type in dataset_types:
+        for dataset_type, download_url in self.download_url.items():
             with tempfile.TemporaryDirectory() as tmp_dir:
                 tmp_path = Path(tmp_dir) / f"{dataset_type}.tar.gz"
-                download_file(self.download_url[dataset_type], tmp_path)
+                download_file(download_url, tmp_path)
 
                 with tarfile.open(tmp_path) as tar:
                     trans_tarinfos = [
