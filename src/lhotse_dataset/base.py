@@ -14,6 +14,7 @@ class Gender(enum.Enum):
 @enum.unique
 class Language(enum.Enum):
     JA = "ja"
+    EN = "en"
 
 
 class BaseCorpus(metaclass=ABCMeta):
