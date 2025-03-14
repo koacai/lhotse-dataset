@@ -4,7 +4,6 @@ from pathlib import Path
 from typing import Generator
 
 import lhotse
-from tqdm import tqdm
 
 from lhotse_dataset.base import BaseCorpus, Language
 from lhotse_dataset.utils import download_file
@@ -53,41 +52,48 @@ class LibriSpeech(BaseCorpus):
                 download_file(self.download_url[dataset_type], tmp_path)
 
                 with tarfile.open(tmp_path) as tar:
-                    for member in tqdm(tar.getmembers()):
-                        if not member.isfile():
-                            continue
-                        if not member.name.endswith(".flac"):
-                            # NOTE: LICENSEが含まれる
-                            continue
+                    trans_tarinfos = [
+                        member
+                        for member in tar.getmembers()
+                        if member.name.endswith(".trans.txt")
+                    ]
 
-                        wav_path = Path(member.name)
-                        dataset_type = wav_path.parent.parent.parent.name
-                        chapter_id, speaker_id, utterance_id = wav_path.stem.split("-")
-                        audio_id = f"librispeech_{dataset_type}_{chapter_id}_{speaker_id}_{utterance_id}"  # noqa
+                    for trans_tarinfo in trans_tarinfos:
+                        trans_file = tar.extractfile(trans_tarinfo)
+                        assert trans_file is not None
+                        lines = trans_file.read().decode().strip().split("\n")
 
-                        audio_file = tar.extractfile(member)
-                        assert audio_file is not None
+                        for line in lines:
+                            stem = line.split(" ")[0]
+                            transcript = " ".join(line.split(" ")[1:])
+                            audio_id = f"librispeech_{dataset_type}_{stem}"
 
-                        wav_bytes = audio_file.read()
-                        recording = lhotse.Recording.from_bytes(
-                            wav_bytes, f"recording_{audio_id}"
-                        )
+                            wav_path = Path(trans_tarinfo.name).parent / f"{stem}.flac"
 
-                        supervision = lhotse.SupervisionSegment(
-                            id=f"segment_{audio_id}",
-                            recording_id=recording.id,
-                            start=0,
-                            duration=recording.duration,
-                            channel=0,
-                            language=self.language.value,
-                            custom={"dataset_type": dataset_type},
-                        )
-                        cut = lhotse.MonoCut(
-                            id=f"{audio_id}",
-                            start=0,
-                            duration=recording.duration,
-                            channel=0,
-                            supervisions=[supervision],
-                            recording=recording,
-                        )
-                        yield cut
+                            audio_file = tar.extractfile(str(wav_path))
+                            assert audio_file is not None
+
+                            wav_bytes = audio_file.read()
+                            recording = lhotse.Recording.from_bytes(
+                                wav_bytes, f"recording_{audio_id}"
+                            )
+
+                            supervision = lhotse.SupervisionSegment(
+                                id=f"segment_{audio_id}",
+                                recording_id=recording.id,
+                                start=0,
+                                duration=recording.duration,
+                                channel=0,
+                                text=transcript,
+                                language=self.language.value,
+                                custom={"dataset_type": dataset_type},
+                            )
+                            cut = lhotse.MonoCut(
+                                id=f"{audio_id}",
+                                start=0,
+                                duration=recording.duration,
+                                channel=0,
+                                supervisions=[supervision],
+                                recording=recording,
+                            )
+                            yield cut
