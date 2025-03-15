@@ -31,8 +31,8 @@ class LibriSpeech(BaseCorpus):
         return Language.EN
 
     def get_cuts(self) -> Generator[lhotse.MonoCut, None, None]:
-        for dataset_type, download_url in self.download_url.items():
-            with tempfile.TemporaryDirectory() as tmp_dir:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            for dataset_type, download_url in self.download_url.items():
                 tmp_path = Path(tmp_dir) / f"{dataset_type}.tar.gz"
                 download_file(download_url, tmp_path)
 
