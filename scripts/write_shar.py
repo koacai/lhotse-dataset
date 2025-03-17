@@ -23,7 +23,7 @@ if __name__ == "__main__":
         corpus = JSUT()
     elif args.corpus == "librispeech":
         corpus = LibriSpeech()
-    elif args.corpus == "hificaptin":
+    elif args.corpus == "hificaptain":
         corpus = HiFiCAPTAIN()
     else:
         raise ValueError(f"invalid corpus name: {args.corpus}")
