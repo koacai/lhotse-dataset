@@ -33,79 +33,72 @@ class LibriSpeech(BaseCorpus):
     def get_cuts(self) -> Generator[lhotse.MonoCut, None, None]:
         with tempfile.TemporaryDirectory() as tmp_dir:
             for dataset_type, download_url in self.download_url.items():
-                tmp_path = Path(tmp_dir) / f"{dataset_type}.tar.gz"
+                tmp_dir_path = Path(tmp_dir)
+                tmp_path = tmp_dir_path / f"{dataset_type}.tar.gz"
                 download_file(download_url, tmp_path)
-
+                # tar を一括展開
                 with tarfile.open(tmp_path) as tar:
-                    trans_tarinfos = [
-                        member
-                        for member in tar.getmembers()
-                        if member.name.endswith(".trans.txt")
-                    ]
+                    tar.extractall(tmp_dir_path, filter="fully_trusted")
 
-                    speakers: dict[str, SpeakerInfo] = {}
-
-                    speakers_file = tar.extractfile("LibriSpeech/SPEAKERS.TXT")
-                    assert speakers_file is not None
-                    lines = speakers_file.read().decode().strip().split("\n")
+                # 話者情報の読み取り
+                speakers = {}
+                speakers_file_path = Path(tmp_dir) / "LibriSpeech/SPEAKERS.TXT"
+                with open(speakers_file_path, "r", encoding="utf-8") as f:
+                    lines = f.readlines()
                     for line in lines:
                         if line.startswith(";"):
                             continue
-                        speaker_id = line.split("|")[0].strip()
-                        gender_str = line.split("|")[1].strip()
-                        name = "".join(line.split("|")[4:]).strip()
-                        if gender_str == "M":
-                            gender = Gender.MALE
-                        elif gender_str == "F":
-                            gender = Gender.FEMALE
-                        else:
-                            raise ValueError(f"invalid gender str: {gender_str}")
+                        parts = [p.strip() for p in line.split("|")]
+                        speaker_id, gender_str, name = (
+                            parts[0],
+                            parts[1],
+                            "".join(parts[4:]),
+                        )
+                        gender = Gender.MALE if gender_str == "M" else Gender.FEMALE
                         speakers[speaker_id] = SpeakerInfo(
                             id=speaker_id, name=name, gender=gender
                         )
 
-                    for trans_tarinfo in trans_tarinfos:
-                        trans_file = tar.extractfile(trans_tarinfo)
-                        assert trans_file is not None
-                        lines = trans_file.read().decode().strip().split("\n")
+                # `.trans.txt` を一括処理
+                trans_files = list(tmp_dir_path.glob("LibriSpeech/**/*.trans.txt"))
+                for trans_file_path in trans_files:
+                    with open(trans_file_path, "r", encoding="utf-8") as f:
+                        lines = f.readlines()
 
-                        for line in lines:
-                            stem = line.split(" ")[0]
-                            speaker_id = stem.split("-")[0]
-                            transcript = " ".join(line.split(" ")[1:])
-                            audio_id = f"librispeech_{dataset_type}_{stem}"
+                    for line in lines:
+                        parts = line.strip().split(" ")
+                        stem, transcript = parts[0], " ".join(parts[1:])
+                        speaker_id = stem.split("-")[0]
+                        audio_id = f"librispeech_{dataset_type}_{stem}"
 
-                            wav_path = Path(trans_tarinfo.name).parent / f"{stem}.flac"
+                        # 音声ファイルのパス
+                        wav_file_path = trans_file_path.parent / f"{stem}.flac"
 
-                            audio_file = tar.extractfile(str(wav_path))
-                            assert audio_file is not None
+                        # lhotse の Recording をファイルから直接作成
+                        recording = lhotse.Recording.from_file(str(wav_file_path))
 
-                            wav_bytes = audio_file.read()
-                            recording = lhotse.Recording.from_bytes(
-                                wav_bytes, f"recording_{audio_id}"
-                            )
+                        supervision = lhotse.SupervisionSegment(
+                            id=f"segment_{audio_id}",
+                            recording_id=recording.id,
+                            start=0,
+                            duration=recording.duration,
+                            channel=0,
+                            text=transcript,
+                            language=self.language.value,
+                            speaker=speaker_id,
+                            gender=speakers[speaker_id].gender.value,
+                            custom={
+                                "dataset_type": dataset_type,
+                                "speaker_name": speakers[speaker_id].name,
+                            },
+                        )
 
-                            supervision = lhotse.SupervisionSegment(
-                                id=f"segment_{audio_id}",
-                                recording_id=recording.id,
-                                start=0,
-                                duration=recording.duration,
-                                channel=0,
-                                text=transcript,
-                                language=self.language.value,
-                                speaker=speaker_id,
-                                gender=speakers[speaker_id].gender.value,
-                                custom={
-                                    "dataset_type": dataset_type,
-                                    "speaker_name": speakers[speaker_id].name,
-                                },
-                            )
-                            cut = lhotse.MonoCut(
-                                id=f"{audio_id}",
-                                start=0,
-                                duration=recording.duration,
-                                channel=0,
-                                supervisions=[supervision],
-                                recording=recording,
-                            )
-                            yield cut
+                        cut = lhotse.MonoCut(
+                            id=audio_id,
+                            start=0,
+                            duration=recording.duration,
+                            channel=0,
+                            supervisions=[supervision],
+                            recording=recording,
+                        )
+                        yield cut
