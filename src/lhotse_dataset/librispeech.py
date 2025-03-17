@@ -36,11 +36,10 @@ class LibriSpeech(BaseCorpus):
                 tmp_dir_path = Path(tmp_dir)
                 tmp_path = tmp_dir_path / f"{dataset_type}.tar.gz"
                 download_file(download_url, tmp_path)
-                # tar を一括展開
+
                 with tarfile.open(tmp_path) as tar:
                     tar.extractall(tmp_dir_path, filter="fully_trusted")
 
-                # 話者情報の読み取り
                 speakers = {}
                 speakers_file_path = Path(tmp_dir) / "LibriSpeech/SPEAKERS.TXT"
                 with open(speakers_file_path, "r", encoding="utf-8") as f:
@@ -59,7 +58,6 @@ class LibriSpeech(BaseCorpus):
                             id=speaker_id, name=name, gender=gender
                         )
 
-                # `.trans.txt` を一括処理
                 trans_files = list(tmp_dir_path.glob("LibriSpeech/**/*.trans.txt"))
                 for trans_file_path in trans_files:
                     with open(trans_file_path, "r", encoding="utf-8") as f:
@@ -71,10 +69,8 @@ class LibriSpeech(BaseCorpus):
                         speaker_id = stem.split("-")[0]
                         audio_id = f"librispeech_{dataset_type}_{stem}"
 
-                        # 音声ファイルのパス
                         wav_file_path = trans_file_path.parent / f"{stem}.flac"
 
-                        # lhotse の Recording をファイルから直接作成
                         recording = lhotse.Recording.from_file(str(wav_file_path))
 
                         supervision = lhotse.SupervisionSegment(
