@@ -1,7 +1,7 @@
 import argparse
 from pathlib import Path
 
-from lhotse_dataset import JIS, JSUT, JVNV, JVS, HQYouTube, LibriSpeech
+from lhotse_dataset import JIS, JSUT, JVNV, JVS, HiFiCAPTAIN, HQYouTube, LibriSpeech
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -23,6 +23,8 @@ if __name__ == "__main__":
         corpus = JSUT()
     elif args.corpus == "librispeech":
         corpus = LibriSpeech()
+    elif args.corpus == "hificaptin":
+        corpus = HiFiCAPTAIN()
     else:
         raise ValueError(f"invalid corpus name: {args.corpus}")
 
