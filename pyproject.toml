@@ -22,7 +22,9 @@ build-backend = "hatchling.build"
 packages = ["src/lhotse_dataset"]
 
 [dependency-groups]
-dev = ["ruff>=0.9.6"]
+dev = [
+    "ruff>=0.11.0",
+]
 
 [tool.ruff]
 exclude = [".venv"]
