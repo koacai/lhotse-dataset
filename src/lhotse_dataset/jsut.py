@@ -56,7 +56,7 @@ class JSUT(BaseCorpus):
                         channel=0,
                         text=text,
                         language=self.language.value,
-                        speaker=None,
+                        speaker="JSUT",
                         gender=Gender.FEMALE.value,
                     )
                     cut = lhotse.MonoCut(
