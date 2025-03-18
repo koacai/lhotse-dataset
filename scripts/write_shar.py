@@ -6,6 +6,7 @@ from lhotse_dataset import (
     JSUT,
     JVNV,
     JVS,
+    DailyTalk,
     HiFiCAPTAIN,
     HQYouTube,
     LibriSpeech,
@@ -36,6 +37,8 @@ if __name__ == "__main__":
         corpus = HiFiCAPTAIN()
     elif args.corpus == "reazonspeech":
         corpus = ReazonSpeech()
+    elif args.corpus == "dailytalk":
+        corpus = DailyTalk()
     else:
         raise ValueError(f"invalid corpus name: {args.corpus}")
 
