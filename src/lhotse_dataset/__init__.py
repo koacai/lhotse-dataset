@@ -1,3 +1,4 @@
+from lhotse_dataset.daily_talk import DailyTalk
 from lhotse_dataset.hi_fi_captain import HiFiCAPTAIN
 from lhotse_dataset.hq_youtube import HQYouTube
 from lhotse_dataset.jis import JIS
@@ -16,4 +17,5 @@ __all__ = [
     "LibriSpeech",
     "HiFiCAPTAIN",
     "ReazonSpeech",
+    "DailyTalk",
 ]
