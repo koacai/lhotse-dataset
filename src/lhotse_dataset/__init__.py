@@ -5,5 +5,15 @@ from lhotse_dataset.jsut import JSUT
 from lhotse_dataset.jvnv import JVNV
 from lhotse_dataset.jvs import JVS
 from lhotse_dataset.librispeech import LibriSpeech
+from lhotse_dataset.reazon_speech import ReazonSpeech
 
-__all__ = ["HQYouTube", "JVNV", "JVS", "JIS", "JSUT", "LibriSpeech", "HiFiCAPTAIN"]
+__all__ = [
+    "HQYouTube",
+    "JVNV",
+    "JVS",
+    "JIS",
+    "JSUT",
+    "LibriSpeech",
+    "HiFiCAPTAIN",
+    "ReazonSpeech",
+]
