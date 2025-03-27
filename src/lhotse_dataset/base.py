@@ -33,9 +33,11 @@ class BaseCorpus(metaclass=ABCMeta):
     def get_cuts(self) -> Generator[lhotse.MonoCut, None, None]:
         pass
 
-    def write_shar(self, output_dir: Path) -> None:
+    def write_shar(self, output_dir: Path, shard_size: int = 1000) -> None:
         output_dir.mkdir(parents=True, exist_ok=True)
 
-        with SharWriter(str(output_dir), fields={"recording": "flac"}) as writer:
+        with SharWriter(
+            str(output_dir), fields={"recording": "flac"}, shard_size=shard_size
+        ) as writer:
             for cut in tqdm(self.get_cuts()):
                 writer.write(cut)
