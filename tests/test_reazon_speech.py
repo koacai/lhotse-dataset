@@ -7,7 +7,7 @@ from lhotse_dataset.reazon_speech import ReazonSpeech
 
 class TestReazonSpeech:
     def test_get_cuts(self):
-        corpus = ReazonSpeech()
+        corpus = ReazonSpeech("tiny")
         gen = corpus.get_cuts()
         for cut in itertools.islice(gen, 3):
             audio = cut.load_audio()
