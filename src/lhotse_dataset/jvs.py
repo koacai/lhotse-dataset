@@ -80,6 +80,7 @@ class JVS(BaseCorpus):
                             language=self.language.value,
                             speaker=speaker_id,
                             gender=speaker_gender[speaker_id].value,
+                            custom={"utter_type": utter_type},
                         )
                         cut = lhotse.MonoCut(
                             id=f"{audio_id}",
