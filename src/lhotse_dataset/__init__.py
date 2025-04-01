@@ -1,3 +1,4 @@
+from lhotse_dataset.callhome_jp import CallHomeJP
 from lhotse_dataset.daily_talk import DailyTalk
 from lhotse_dataset.hi_fi_captain import HiFiCAPTAIN
 from lhotse_dataset.hq_youtube import HQYouTube
@@ -18,4 +19,5 @@ __all__ = [
     "HiFiCAPTAIN",
     "ReazonSpeech",
     "DailyTalk",
+    "CallHomeJP",
 ]
