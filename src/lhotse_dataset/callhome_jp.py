@@ -59,7 +59,7 @@ class CallHomeJP(BaseCorpus):
 
                 recording = lhotse.Recording.from_file(tmp_path)
                 supervision_0 = lhotse.SupervisionSegment(
-                    id=f"segment_{audio_id}",
+                    id=f"segment_{audio_id}_0",
                     recording_id=recording.id,
                     start=0,
                     duration=recording.duration,
@@ -67,7 +67,7 @@ class CallHomeJP(BaseCorpus):
                     language=self.language.value,
                 )
                 supervision_1 = lhotse.SupervisionSegment(
-                    id=f"segment_{audio_id}",
+                    id=f"segment_{audio_id}_1",
                     recording_id=recording.id,
                     start=0,
                     duration=recording.duration,
