@@ -58,7 +58,7 @@ class CallHomeJP(BaseCorpus):
                 download_file(link, tmp_path, session)
 
                 recording = lhotse.Recording.from_file(tmp_path)
-                supervision = lhotse.SupervisionSegment(
+                supervision_0 = lhotse.SupervisionSegment(
                     id=f"segment_{audio_id}",
                     recording_id=recording.id,
                     start=0,
@@ -66,12 +66,20 @@ class CallHomeJP(BaseCorpus):
                     channel=0,
                     language=self.language.value,
                 )
+                supervision_1 = lhotse.SupervisionSegment(
+                    id=f"segment_{audio_id}",
+                    recording_id=recording.id,
+                    start=0,
+                    duration=recording.duration,
+                    channel=1,
+                    language=self.language.value,
+                )
                 cut = lhotse.MultiCut(
                     id=f"{audio_id}",
                     start=0,
                     duration=recording.duration,
                     channel=[0, 1],
-                    supervisions=[supervision],
+                    supervisions=[supervision_0, supervision_1],
                     recording=recording,
                 )
                 yield cut
