@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Generator
 
-import lhotse
+from lhotse.cut import Cut
 from lhotse.shar import SharWriter
 from tqdm import tqdm
 
@@ -30,7 +30,7 @@ class SpeakerInfo:
 
 class BaseCorpus(metaclass=ABCMeta):
     @abstractmethod
-    def get_cuts(self) -> Generator[lhotse.MonoCut, None, None]:
+    def get_cuts(self) -> Generator[Cut, None, None]:
         pass
 
     def write_shar(self, output_dir: Path, shard_size: int = 1000) -> None:

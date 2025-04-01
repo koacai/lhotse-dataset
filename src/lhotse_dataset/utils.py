@@ -4,13 +4,24 @@ import requests
 from tqdm import tqdm
 
 
-def download_file(url: str, path: Path):
-    with requests.get(url, stream=True) as r:
-        r.raise_for_status()
-        pbar = tqdm(
-            total=int(r.headers.get("content-length", 0)), unit="B", unit_scale=True
-        )
-        with open(path, "wb") as f:
-            for chunk in r.iter_content(chunk_size=8192):
-                f.write(chunk)
-                pbar.update(len(chunk))
+def download_file(url: str, path: Path, session: requests.Session | None = None):
+    if session is not None:
+        with session.get(url, stream=True) as r:
+            r.raise_for_status()
+            pbar = tqdm(
+                total=int(r.headers.get("content-length", 0)), unit="B", unit_scale=True
+            )
+            with open(path, "wb") as f:
+                for chunk in r.iter_content(chunk_size=8192):
+                    f.write(chunk)
+                    pbar.update(len(chunk))
+    else:
+        with requests.get(url, stream=True) as r:
+            r.raise_for_status()
+            pbar = tqdm(
+                total=int(r.headers.get("content-length", 0)), unit="B", unit_scale=True
+            )
+            with open(path, "wb") as f:
+                for chunk in r.iter_content(chunk_size=8192):
+                    f.write(chunk)
+                    pbar.update(len(chunk))
