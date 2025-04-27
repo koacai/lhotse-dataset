@@ -20,8 +20,10 @@ class WhamNoise(BaseCorpus):
 
     def get_cuts(self) -> Generator[lhotse.MultiCut, None, None]:
         with tempfile.TemporaryDirectory() as tmp_dir:
-            tmp_path = Path(tmp_dir) / "wham_zip.zip"
-            download_file(self.download_url, tmp_path)
+            tmp_dir = ".cache"
+            tmp_path = Path(tmp_dir) / "wham_noise.zip"
+            if not tmp_path.exists():
+                download_file(self.download_url, tmp_path)
 
             wham_zip = zipfile.ZipFile(tmp_path)
             wav_zippaths = [
@@ -35,6 +37,16 @@ class WhamNoise(BaseCorpus):
                 with wham_zip.open(str(wav_zippath), "r") as audio_file:
                     wav_bytes = audio_file.read()
 
+                dir = Path(wav_zippath).parent.name
+                if dir == "tr":
+                    subset = "train"
+                elif dir == "cv":
+                    subset = "validation"
+                elif dir == "tt":
+                    subset = "test"
+                else:
+                    raise ValueError(f"Unknown subset {dir}")
+
                 recording = lhotse.Recording.from_bytes(
                     wav_bytes, f"recording_{audio_id}"
                 )
@@ -45,5 +57,6 @@ class WhamNoise(BaseCorpus):
                     duration=recording.duration,
                     channel=[0, 1],
                     recording=recording,
+                    custom={"subset": subset},
                 )
                 yield cut
