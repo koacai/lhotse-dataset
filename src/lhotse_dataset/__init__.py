@@ -8,6 +8,7 @@ from lhotse_dataset.jvnv import JVNV
 from lhotse_dataset.jvs import JVS
 from lhotse_dataset.librispeech import LibriSpeech
 from lhotse_dataset.reazon_speech import ReazonSpeech
+from lhotse_dataset.wham_noise import WhamNoise
 
 __all__ = [
     "HQYouTube",
@@ -20,4 +21,5 @@ __all__ = [
     "ReazonSpeech",
     "DailyTalk",
     "CallHomeJP",
+    "WhamNoise",
 ]

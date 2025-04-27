@@ -20,10 +20,8 @@ class WhamNoise(BaseCorpus):
 
     def get_cuts(self) -> Generator[lhotse.MultiCut, None, None]:
         with tempfile.TemporaryDirectory() as tmp_dir:
-            tmp_dir = ".cache"
             tmp_path = Path(tmp_dir) / "wham_noise.zip"
-            if not tmp_path.exists():
-                download_file(self.download_url, tmp_path)
+            download_file(self.download_url, tmp_path)
 
             wham_zip = zipfile.ZipFile(tmp_path)
             wav_zippaths = [
