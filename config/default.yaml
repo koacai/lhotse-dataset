@@ -1,2 +1,2 @@
 defaults:
-  - data: wham_noise
+  - data: librispeech
