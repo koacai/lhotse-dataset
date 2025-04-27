@@ -1,2 +1,2 @@
-# lhotse dataset
+# Lhotse Dataset
 
