@@ -1,0 +1,5 @@
+corpus:
+  _target_: lhotse_dataset.WhamNoise
+
+shar_dir: /groups/gag51394/users/asai/shar/wham_noise
+shard_size: 2000
