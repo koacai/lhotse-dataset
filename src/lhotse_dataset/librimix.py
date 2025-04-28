@@ -12,6 +12,7 @@ from lhotse_dataset.base import BaseCorpus, Language
 
 class LibriMix(BaseCorpus):
     def __init__(self, librispeech_shar_dir: Path, wham_noise_shar_dir: Path) -> None:
+        super(LibriMix, self).__init__()
         self.librispeech_shar_dir = librispeech_shar_dir
         self.wham_noise_shar_dir = wham_noise_shar_dir
 
