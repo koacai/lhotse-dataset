@@ -23,6 +23,8 @@ class LibriMix(BaseCorpus):
         return Language.EN
 
     def get_cuts(self) -> Generator[MixedCut, None, None]:
+        """NOTE: これはsharに書き出すことができない"""
+
         ls_cut_paths = sorted(
             list(map(str, self.librispeech_shar_dir.glob("cuts.*.jsonl.gz")))
         )
