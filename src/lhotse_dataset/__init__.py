@@ -6,6 +6,7 @@ from lhotse_dataset.jis import JIS
 from lhotse_dataset.jsut import JSUT
 from lhotse_dataset.jvnv import JVNV
 from lhotse_dataset.jvs import JVS
+from lhotse_dataset.librimix import LibriMix
 from lhotse_dataset.librispeech import LibriSpeech
 from lhotse_dataset.reazon_speech import ReazonSpeech
 from lhotse_dataset.wham_noise import WhamNoise
@@ -22,4 +23,5 @@ __all__ = [
     "DailyTalk",
     "CallHomeJP",
     "WhamNoise",
+    "LibriMix",
 ]
