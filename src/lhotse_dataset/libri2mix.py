@@ -79,6 +79,7 @@ class Libri2Mix(BaseCorpus):
                         language=source_1_cut.supervisions[0].language,
                         speaker=source_1_cut.supervisions[0].speaker,
                         gender=source_1_cut.supervisions[0].gender,
+                        custom=source_1_cut.supervisions[0].custom,
                     )
                     supervision_1 = lhotse.SupervisionSegment(
                         id=f"segment_{mixture_id}_1",
@@ -90,6 +91,7 @@ class Libri2Mix(BaseCorpus):
                         language=source_2_cut.supervisions[0].language,
                         speaker=source_2_cut.supervisions[0].speaker,
                         gender=source_2_cut.supervisions[0].gender,
+                        custom=source_2_cut.supervisions[0].custom,
                     )
 
                     cut = MultiCut(
@@ -100,6 +102,7 @@ class Libri2Mix(BaseCorpus):
                         supervisions=[supervision_0, supervision_1],
                         recording=recording,
                     )
+                    print(cut)
                     yield cut
 
     @staticmethod
