@@ -1,2 +1,2 @@
 defaults:
-  - data: librispeech
+  - data: libri2mix
