@@ -17,7 +17,7 @@ from lhotse_dataset.base import BaseCorpus, Language
 class Libri2Mix(BaseCorpus):
     def __init__(self, librispeech_shar_dir: Path) -> None:
         super(Libri2Mix, self).__init__()
-        self.librispeech_shar_dir = librispeech_shar_dir
+        self.librispeech_shar_dir = Path(librispeech_shar_dir)
 
     @property
     def url(self) -> str:
@@ -45,6 +45,9 @@ class Libri2Mix(BaseCorpus):
             libri2mix_csv_paths = dir.glob("**/Libri2Mix/*.csv")
 
             for csv_path in libri2mix_csv_paths:
+                if str(csv_path).endswith("_info.csv"):
+                    continue
+
                 df = pd.read_csv(csv_path)
                 for row in df.itertuples():
                     source_1_id = self.path_to_librispeech_id(row.source_1_path)  # type: ignore
@@ -102,7 +105,6 @@ class Libri2Mix(BaseCorpus):
                         supervisions=[supervision_0, supervision_1],
                         recording=recording,
                     )
-                    print(cut)
                     yield cut
 
     @staticmethod
