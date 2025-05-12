@@ -1,6 +1,5 @@
 corpus:
   _target_: lhotse_dataset.Libri2Mix
-  librispeech_shar_dir: /groups/gag51394/users/asai/shar/librispeech
 
 shar_dir: /groups/gag51394/users/asai/shar/libri2mix
 shard_size: 50000
