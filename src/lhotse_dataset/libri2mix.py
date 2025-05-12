@@ -1,43 +1,42 @@
 import io
+import tarfile
 import tempfile
 from pathlib import Path
-from typing import Callable, Generator
+from typing import Generator
 
 import git
 import lhotse
 import numpy as np
 import pandas as pd
 import soundfile as sf
-from lhotse import CutSet, MultiCut
-from lhotse.cut import Cut
+from lhotse import MultiCut
 
 from lhotse_dataset.base import BaseCorpus, Language
+from lhotse_dataset.utils import download_file
 
 
 class Libri2Mix(BaseCorpus):
-    def __init__(self, librispeech_shar_dir: Path) -> None:
-        super(Libri2Mix, self).__init__()
-        self.librispeech_shar_dir = Path(librispeech_shar_dir)
-
     @property
     def url(self) -> str:
         return "https://github.com/JorisCos/LibriMix"
+
+    @property
+    def download_url(self) -> dict[str, str]:
+        return {
+            "dev-clean": "https://www.openslr.org/resources/12/dev-clean.tar.gz",
+            "dev-other": "https://www.openslr.org/resources/12/dev-other.tar.gz",
+            "test-clean": "https://www.openslr.org/resources/12/test-clean.tar.gz",
+            "test-other": "https://www.openslr.org/resources/12/test-other.tar.gz",
+            "train-clean-100": "https://www.openslr.org/resources/12/train-clean-100.tar.gz",
+            "train-clean-360": "https://www.openslr.org/resources/12/train-clean-360.tar.gz",
+            "train-other-500": "https://www.openslr.org/resources/12/train-other-500.tar.gz",
+        }
 
     @property
     def language(self) -> Language:
         return Language.EN
 
     def get_cuts(self) -> Generator[MultiCut, None, None]:
-        ls_cut_paths = sorted(
-            list(map(str, self.librispeech_shar_dir.glob("cuts.*.jsonl.gz")))
-        )
-        ls_recording_paths = sorted(
-            list(map(str, self.librispeech_shar_dir.glob("recording.*.tar")))
-        )
-        ls_cuts = CutSet.from_shar(
-            {"cuts": ls_cut_paths, "recording": ls_recording_paths}
-        )
-
         with tempfile.TemporaryDirectory() as tmp_dir:
             dir = Path(tmp_dir) / "LibriMix"
             git.Repo.clone_from(self.url, dir)
@@ -48,53 +47,35 @@ class Libri2Mix(BaseCorpus):
                 if str(csv_path).endswith("_info.csv"):
                     continue
 
+                subset = csv_path.stem.split("_")[1]
+
                 df = pd.read_csv(csv_path)
+
+                tmp_dir_path = Path(tmp_dir)
+                tmp_path = tmp_dir_path / f"{subset}.tar.gz"
+                download_file(self.download_url[subset], tmp_path)
+
+                with tarfile.open(tmp_path) as tar:
+                    tar.extractall(tmp_dir_path, filter="fully_trusted")
+
                 for row in df.itertuples():
-                    source_1_id = self.path_to_librispeech_id(row.source_1_path)  # type: ignore
-                    source_1_cut = ls_cuts.filter(self._filter_ls_id(source_1_id))[0]
+                    source_1_path = tmp_dir_path / "LibriSpeech" / row.source_1_path  # type: ignore
+                    source_2_path = tmp_dir_path / "LibriSpeech" / row.source_2_path  # type: ignore
 
-                    source_2_id = self.path_to_librispeech_id(row.source_2_path)  # type: ignore
-                    source_2_cut = ls_cuts.filter(self._filter_ls_id(source_2_id))[0]
+                    wav_1, sr = sf.read(source_1_path)
+                    wav_2, sr = sf.read(source_2_path)
 
-                    wav_1 = source_1_cut.load_audio() * row.source_1_gain  # type: ignore
-                    wav_2 = source_2_cut.load_audio() * row.source_2_gain  # type: ignore
-
-                    wav_len = max(wav_1.shape[1], wav_2.shape[1])
+                    wav_len = max(wav_1.shape[0], wav_2.shape[0])
                     wav = np.zeros((2, wav_len), dtype=wav_1.dtype)
-                    wav[0, : wav_1.shape[1]] = wav_1
-                    wav[1, : wav_2.shape[1]] = wav_2
+                    wav[0, : wav_1.shape[0]] = wav_1 * row.source_1_gain  # type: ignore
+                    wav[1, : wav_2.shape[0]] = wav_2 * row.source_2_gain  # type: ignore
 
                     buf = io.BytesIO()
-                    sf.write(buf, wav.T, source_1_cut.sampling_rate, format="WAV")
+                    sf.write(buf, wav.T, sr, format="WAV")
 
                     mixture_id = row.mixture_ID  # type: ignore
                     recording = lhotse.Recording.from_bytes(
                         buf.getvalue(), recording_id=f"recording_{mixture_id}"
-                    )
-
-                    supervision_0 = lhotse.SupervisionSegment(
-                        id=f"segment_{mixture_id}_0",
-                        recording_id=recording.id,
-                        start=0,
-                        duration=source_1_cut.supervisions[0].duration,
-                        channel=0,
-                        text=source_1_cut.supervisions[0].text,
-                        language=source_1_cut.supervisions[0].language,
-                        speaker=source_1_cut.supervisions[0].speaker,
-                        gender=source_1_cut.supervisions[0].gender,
-                        custom=source_1_cut.supervisions[0].custom,
-                    )
-                    supervision_1 = lhotse.SupervisionSegment(
-                        id=f"segment_{mixture_id}_1",
-                        recording_id=recording.id,
-                        start=0,
-                        duration=source_2_cut.supervisions[0].duration,
-                        channel=1,
-                        text=source_2_cut.supervisions[0].text,
-                        language=source_2_cut.supervisions[0].language,
-                        speaker=source_2_cut.supervisions[0].speaker,
-                        gender=source_2_cut.supervisions[0].gender,
-                        custom=source_2_cut.supervisions[0].custom,
                     )
 
                     cut = MultiCut(
@@ -102,17 +83,9 @@ class Libri2Mix(BaseCorpus):
                         start=0,
                         duration=recording.duration,
                         channel=[0, 1],
-                        supervisions=[supervision_0, supervision_1],
+                        supervisions=[],
                         recording=recording,
+                        custom={"subset": subset},
                     )
+
                     yield cut
-
-    @staticmethod
-    def path_to_librispeech_id(path: str) -> str:
-        subset = path.split("/")[0]
-        audio_id = path.split("/")[-1].split(".")[0]
-        return f"librispeech_{subset}_{audio_id}"
-
-    @staticmethod
-    def _filter_ls_id(id: str) -> Callable[[Cut], bool]:
-        return lambda cut: cut.id == id
