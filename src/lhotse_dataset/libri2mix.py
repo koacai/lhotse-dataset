@@ -43,7 +43,7 @@ class Libri2Mix(BaseCorpus):
 
             libri2mix_csv_paths = dir.glob("**/Libri2Mix/*.csv")
 
-            for csv_path in libri2mix_csv_paths:
+            for csv_path in sorted(list(libri2mix_csv_paths)):
                 if str(csv_path).endswith("_info.csv"):
                     continue
 
