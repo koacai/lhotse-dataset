@@ -72,16 +72,16 @@ class Libri2Mix(BaseCorpus):
                     source_1_path = tmp_dir_path / "LibriSpeech" / row.source_1_path  # type: ignore
                     source_2_path = tmp_dir_path / "LibriSpeech" / row.source_2_path  # type: ignore
                     noise_path = f"wham_noise/{row.noise_path}"  # type: ignore
+
                     with wham_zip.open(noise_path, "r") as audio_file:
-                        wav_bytes = audio_file.read()
+                        noise, sr = sf.read(audio_file)
+                    if len(noise.shape) > 1:
+                        noise = noise[:, 0]
 
                     wav_1, sr = sf.read(source_1_path)
                     wav_2, sr = sf.read(source_2_path)
-                    wav_len = max(wav_1.shape[0], wav_2.shape[0])
+                    wav_len = max(wav_1.shape[0], wav_2.shape[0], noise.shape[0])
 
-                    noise, sr = sf.read(wav_bytes)
-                    if len(noise.shape) > 1:
-                        noise = noise[:, 0]
                     if len(noise) < wav_len:
                         noise = self.extend_noise(noise, wav_len)
 
