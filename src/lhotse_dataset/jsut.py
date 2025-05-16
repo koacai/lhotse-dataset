@@ -22,6 +22,10 @@ class JSUT(BaseCorpus):
     def language(self) -> Language:
         return Language.JA
 
+    @property
+    def shard_size(self) -> int:
+        return 1000
+
     def get_cuts(self) -> Generator[lhotse.MonoCut, None, None]:
         """Download the corpus to temporary file"""
         with tempfile.TemporaryDirectory() as tmp_dir:

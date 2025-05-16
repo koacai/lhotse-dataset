@@ -2,4 +2,3 @@ corpus:
   _target_: lhotse_dataset.JSUT
 
 shar_dir: ../shar/jsut
-shard_size: 1000

@@ -18,6 +18,10 @@ class WhamNoise(BaseCorpus):
     def download_url(self) -> str:
         return "https://my-bucket-a8b4b49c25c811ee9a7e8bba05fa24c7.s3.amazonaws.com/wham_noise.zip"
 
+    @property
+    def shard_size(self) -> int:
+        return 2000
+
     def get_cuts(self) -> Generator[lhotse.MultiCut, None, None]:
         with tempfile.TemporaryDirectory() as tmp_dir:
             tmp_path = Path(tmp_dir) / "wham_noise.zip"
