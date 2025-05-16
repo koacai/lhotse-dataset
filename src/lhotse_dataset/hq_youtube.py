@@ -17,6 +17,10 @@ class HQYouTube(BaseCorpus):
     def language(self) -> Language:
         return Language.JA
 
+    @property
+    def shard_size(self) -> int:
+        return 100000
+
     def get_cuts(self) -> Generator[lhotse.MonoCut, None, None]:
         with tarfile.TarFile(self.tar_path) as hq_youtube_tar:
             for member in hq_youtube_tar.getmembers():

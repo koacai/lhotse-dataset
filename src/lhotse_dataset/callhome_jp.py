@@ -32,6 +32,10 @@ class CallHomeJP(BaseCorpus):
     def language(self) -> Language:
         return Language.JA
 
+    @property
+    def shard_size(self) -> int:
+        return 10
+
     def get_cuts(self) -> Generator[lhotse.MultiCut, None, None]:
         session = requests.Session()
         headers = {"Content-Type": "application/json"}

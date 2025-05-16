@@ -37,7 +37,7 @@ class BaseCorpus(metaclass=ABCMeta):
     def shard_size(self) -> int:
         return 1000
 
-    def write_shar(self, output_dir: Path, shard_size: int | None) -> None:
+    def write_shar(self, output_dir: Path, shard_size: int | None = None) -> None:
         output_dir.mkdir(parents=True, exist_ok=True)
 
         if shard_size is None:

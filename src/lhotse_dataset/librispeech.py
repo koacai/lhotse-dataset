@@ -30,6 +30,10 @@ class LibriSpeech(BaseCorpus):
     def language(self) -> Language:
         return Language.EN
 
+    @property
+    def shard_size(self) -> int:
+        return 5000
+
     def get_cuts(self) -> Generator[lhotse.MonoCut, None, None]:
         with tempfile.TemporaryDirectory() as tmp_dir:
             for dataset_type, download_url in self.download_url.items():

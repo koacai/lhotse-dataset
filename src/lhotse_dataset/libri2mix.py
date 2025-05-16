@@ -39,6 +39,10 @@ class Libri2Mix(BaseCorpus):
     def language(self) -> Language:
         return Language.EN
 
+    @property
+    def shard_size(self) -> int:
+        return 5000
+
     def get_cuts(self) -> Generator[MultiCut, None, None]:
         with tempfile.TemporaryDirectory() as tmp_dir:
             dir = Path(tmp_dir) / "LibriMix"
