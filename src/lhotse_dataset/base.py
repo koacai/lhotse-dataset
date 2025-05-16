@@ -33,8 +33,15 @@ class BaseCorpus(metaclass=ABCMeta):
     def get_cuts(self) -> Generator[Cut, None, None]:
         pass
 
-    def write_shar(self, output_dir: Path, shard_size: int = 1000) -> None:
+    @property
+    def shard_size(self) -> int:
+        return 1000
+
+    def write_shar(self, output_dir: Path, shard_size: int | None) -> None:
         output_dir.mkdir(parents=True, exist_ok=True)
+
+        if shard_size is None:
+            shard_size = self.shard_size
 
         with SharWriter(
             str(output_dir), fields={"recording": "flac"}, shard_size=shard_size
