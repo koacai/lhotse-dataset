@@ -26,12 +26,9 @@ class Libri2Mix(BaseCorpus):
         return {
             "librispeech": {
                 "dev-clean": "https://www.openslr.org/resources/12/dev-clean.tar.gz",
-                "dev-other": "https://www.openslr.org/resources/12/dev-other.tar.gz",
                 "test-clean": "https://www.openslr.org/resources/12/test-clean.tar.gz",
-                "test-other": "https://www.openslr.org/resources/12/test-other.tar.gz",
                 "train-clean-100": "https://www.openslr.org/resources/12/train-clean-100.tar.gz",
                 "train-clean-360": "https://www.openslr.org/resources/12/train-clean-360.tar.gz",
-                "train-other-500": "https://www.openslr.org/resources/12/train-other-500.tar.gz",
             },
             "wham_noise": {
                 "all": "https://my-bucket-a8b4b49c25c811ee9a7e8bba05fa24c7.s3.amazonaws.com/wham_noise.zip"
@@ -73,8 +70,12 @@ class Libri2Mix(BaseCorpus):
                     source_2_path = tmp_dir_path / "LibriSpeech" / row.source_2_path  # type: ignore
                     noise_path = f"wham_noise/{row.noise_path}"  # type: ignore
 
-                    with wham_zip.open(noise_path, "r") as audio_file:
-                        noise, sr = sf.read(audio_file)
+                    try:
+                        with wham_zip.open(noise_path, "r") as audio_file:
+                            noise, sr = sf.read(audio_file)
+                    except KeyError:
+                        continue
+
                     if len(noise.shape) > 1:
                         noise = noise[:, 0]
 
