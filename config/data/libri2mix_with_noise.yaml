@@ -1,0 +1,4 @@
+corpus:
+  _target_: lhotse_dataset.Libri2MixWithNoise
+
+shar_dir: /groups/gag51394/users/asai/shar/libri2mix_with_noise
