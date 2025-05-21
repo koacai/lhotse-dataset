@@ -1,0 +1,6 @@
+corpus:
+  _target_: lhotse_dataset.CallFriendJP
+  email: email # NEED TO CHANGE
+  pswd: pswd # NEED TO CHANGE
+
+shar_dir: ../shar/callfriend_jp
