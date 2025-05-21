@@ -1,3 +1,4 @@
+from lhotse_dataset.callfriend_jp import CallFriendJP
 from lhotse_dataset.callhome_jp import CallHomeJP
 from lhotse_dataset.daily_talk import DailyTalk
 from lhotse_dataset.hi_fi_captain import HiFiCAPTAIN
@@ -24,4 +25,5 @@ __all__ = [
     "CallHomeJP",
     "WhamNoise",
     "Libri2Mix",
+    "CallFriendJP",
 ]
