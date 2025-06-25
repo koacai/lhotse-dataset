@@ -88,7 +88,7 @@ class LibriSpeech(BaseCorpus):
                             speaker=speaker_id,
                             gender=speakers[speaker_id].gender.value,
                             custom={
-                                "dataset_type": dataset_type,
+                                "subset": dataset_type,
                                 "speaker_name": speakers[speaker_id].name,
                             },
                         )
