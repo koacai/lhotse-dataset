@@ -87,6 +87,7 @@ class Libri2MixClean(BaseCorpus):
                         start=0,
                         duration=wav_1.shape[0] / sr,
                         channel=0,
+                        custom={"wav_len": wav_1.shape[0]},
                     )
                     supervision_source_2 = SupervisionSegment(
                         id=f"source_2_{row.source_2_path}",  # type: ignore
@@ -94,6 +95,7 @@ class Libri2MixClean(BaseCorpus):
                         start=0,
                         duration=wav_2.shape[0] / sr,
                         channel=1,
+                        custom={"wav_len": wav_2.shape[0]},
                     )
 
                     cut = MultiCut(
