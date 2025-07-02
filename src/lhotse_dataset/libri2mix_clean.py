@@ -85,14 +85,14 @@ class Libri2MixClean(BaseCorpus):
                         id=f"source_1_{row.source_1_path}",  # type: ignore
                         recording_id=recording.id,
                         start=0,
-                        duration=recording.duration,
+                        duration=wav_1.shape[0] / sr,
                         channel=0,
                     )
                     supervision_source_2 = SupervisionSegment(
                         id=f"source_2_{row.source_2_path}",  # type: ignore
                         recording_id=recording.id,
                         start=0,
-                        duration=recording.duration,
+                        duration=wav_2.shape[0] / sr,
                         channel=1,
                     )
 

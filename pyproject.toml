@@ -45,3 +45,6 @@ docstring-code-format = true
 [tool.pyright]
 venvPath = "."
 venv = ".venv"
+
+[tool.pytest.ini_options]
+addopts = "-vv --tb=short -s"
