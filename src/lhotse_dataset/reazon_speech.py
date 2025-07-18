@@ -7,6 +7,7 @@ from datasets import DatasetDict, load_dataset
 from lhotse_dataset.base import BaseCorpus, Language
 
 
+# NOTE: librosaの依存がある？ので別途インストール必要かも
 class ReazonSpeech(BaseCorpus):
     dataset_size: str
 
