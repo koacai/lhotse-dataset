@@ -121,6 +121,5 @@ class Libri2MixClean(BaseCorpus):
                         recording=recording,
                         custom={"subset": subset},
                     )
-                    print(cut)
 
                     yield cut
