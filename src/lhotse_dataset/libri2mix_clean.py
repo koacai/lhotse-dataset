@@ -60,6 +60,16 @@ class Libri2MixClean(BaseCorpus):
                 with tarfile.open(tmp_ls_path) as tar:
                     tar.extractall(tmp_dir_path, filter="fully_trusted")
 
+                transcriptions = {}
+                trans_files = list(tmp_dir_path.glob("LibriSpeech/**/*.trans.txt"))
+                for trans_file_path in trans_files:
+                    with open(trans_file_path, "r", encoding="utf-8") as f:
+                        lines = f.readlines()
+                    for line in lines:
+                        parts = line.strip().split(" ")
+                        audio_id, transcript = parts[0], " ".join(parts[1:])
+                        transcriptions[audio_id] = transcript
+
                 for row in df.itertuples():
                     source_1_path = tmp_dir_path / "LibriSpeech" / row.source_1_path  # type: ignore
                     source_2_path = tmp_dir_path / "LibriSpeech" / row.source_2_path  # type: ignore
@@ -76,6 +86,8 @@ class Libri2MixClean(BaseCorpus):
                     sf.write(buf, wav.T, sr, format="WAV")
 
                     mixture_id = row.mixture_ID  # type: ignore
+                    audio_id_1 = mixture_id.split("_")[0]
+                    audio_id_2 = mixture_id.split("_")[1]
                     recording = lhotse.Recording.from_bytes(
                         buf.getvalue(), recording_id=f"recording_{mixture_id}"
                     )
@@ -87,6 +99,7 @@ class Libri2MixClean(BaseCorpus):
                         start=0,
                         duration=wav_1.shape[0] / sr,
                         channel=0,
+                        text=transcriptions.get(audio_id_1, ""),
                         custom={"wav_len": wav_1.shape[0]},
                     )
                     supervision_source_2 = SupervisionSegment(
@@ -95,6 +108,7 @@ class Libri2MixClean(BaseCorpus):
                         start=0,
                         duration=wav_2.shape[0] / sr,
                         channel=1,
+                        text=transcriptions.get(audio_id_2, ""),
                         custom={"wav_len": wav_2.shape[0]},
                     )
 
@@ -107,5 +121,6 @@ class Libri2MixClean(BaseCorpus):
                         recording=recording,
                         custom={"subset": subset},
                     )
+                    print(cut)
 
                     yield cut
