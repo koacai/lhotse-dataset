@@ -1,11 +1,11 @@
 import enum
 from abc import ABCMeta, abstractmethod
-from dataclasses import dataclass
 from pathlib import Path
 from typing import Generator
 
 from lhotse.cut import Cut
 from lhotse.shar import SharWriter
+from pydantic import BaseModel
 from tqdm import tqdm
 
 
@@ -21,8 +21,7 @@ class Language(enum.Enum):
     EN = "en"
 
 
-@dataclass
-class SpeakerInfo:
+class SpeakerInfo(BaseModel):
     id: str
     name: str
     gender: Gender
