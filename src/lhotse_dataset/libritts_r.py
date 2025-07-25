@@ -70,14 +70,23 @@ class LibriTTSR(BaseCorpus):
                     normalized_txt_path = (
                         wav_file.parent / f"{wav_file.stem}.normalized.txt"
                     )
-                    with open(normalized_txt_path, "r", encoding="utf-8") as f:
-                        normalized_txt = f.readline()
+
+                    try:
+                        with open(normalized_txt_path, "r", encoding="utf-8") as f:
+                            normalized_txt = f.readline()
+                    except FileNotFoundError:
+                        print("Warning: Normalized text file not found for", wav_file)
+                        normalized_txt = ""
 
                     original_txt_path = (
                         wav_file.parent / f"{wav_file.stem}.original.txt"
                     )
-                    with open(original_txt_path, "r", encoding="utf-8") as f:
-                        original_txt = f.readline()
+                    try:
+                        with open(original_txt_path, "r", encoding="utf-8") as f:
+                            original_txt = f.readline()
+                    except FileNotFoundError:
+                        print("Warning: Original text file not found for", wav_file)
+                        original_txt = ""
 
                     speaker_id = wav_file.stem.split("_")[0]
                     audio_id = f"libritts_r_{subset}_{wav_file.stem}"
