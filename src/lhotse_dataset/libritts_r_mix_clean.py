@@ -29,17 +29,17 @@ class LibriTTSRMixClean(BaseCorpus):
 
     @property
     def shard_size(self) -> int:
-        return 5000
+        return 100
 
     def get_cuts(self) -> Generator[lhotse.MultiCut, None, None]:
         metadata_dir = Path(__file__).parent / "data/libritts_r_mix"
-        csv_paths = metadata_dir.glob("*.csv")
+        csv_paths = sorted(list(metadata_dir.glob("*.csv")))
 
         with tempfile.TemporaryDirectory() as tmp_dir:
             tmp_dir_path = Path(tmp_dir)
 
             for csv_path in csv_paths:
-                subset = csv_path.stem
+                subset = csv_path.stem.split("_")[-1]
                 df = pd.read_csv(csv_path)
 
                 tmp_ls_path = tmp_dir_path / f"{subset}.tar.gz"
@@ -57,8 +57,8 @@ class LibriTTSRMixClean(BaseCorpus):
                     wav_len = max(wav_1.shape[0], wav_2.shape[0])
 
                     wav = np.zeros((2, wav_len), dtype=wav_1.dtype)
-                    wav[0, : wav_1.shape[0]] = wav_1
-                    wav[1, : wav_2.shape[0]] = wav_2
+                    wav[0, : wav_1.shape[0]] = wav_1 * row.source_1_gain
+                    wav[1, : wav_2.shape[0]] = wav_2 * row.source_2_gain
 
                     buf = io.BytesIO()
                     sf.write(buf, wav.T, sr, format="WAV")
@@ -151,5 +151,6 @@ class LibriTTSRMixClean(BaseCorpus):
                         recording=recording,
                         custom={"subset": subset},
                     )
+                    print(cut)
 
                     yield cut
