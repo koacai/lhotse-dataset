@@ -11,6 +11,7 @@ from lhotse_dataset.libri2mix_clean import Libri2MixClean
 from lhotse_dataset.libri2mix_with_noise import Libri2MixWithNoise
 from lhotse_dataset.librispeech import LibriSpeech
 from lhotse_dataset.libritts_r import LibriTTSR
+from lhotse_dataset.libritts_r_mix_clean import LibriTTSRMixClean
 from lhotse_dataset.reazon_speech import ReazonSpeech
 from lhotse_dataset.wham_noise import WhamNoise
 
@@ -30,4 +31,5 @@ __all__ = [
     "CallFriendJP",
     "Libri2MixClean",
     "LibriTTSR",
+    "LibriTTSRMixClean",
 ]
