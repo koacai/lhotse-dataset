@@ -57,8 +57,8 @@ class LibriTTSRMixClean(BaseCorpus):
                     wav_len = max(wav_1.shape[0], wav_2.shape[0])
 
                     wav = np.zeros((2, wav_len), dtype=wav_1.dtype)
-                    wav[0, : wav_1.shape[0]] = wav_1 * row.source_1_gain
-                    wav[1, : wav_2.shape[0]] = wav_2 * row.source_2_gain
+                    wav[0, : wav_1.shape[0]] = wav_1 * row.source_1_gain  # type: ignore
+                    wav[1, : wav_2.shape[0]] = wav_2 * row.source_2_gain  # type: ignore
 
                     buf = io.BytesIO()
                     sf.write(buf, wav.T, sr, format="WAV")
@@ -151,6 +151,5 @@ class LibriTTSRMixClean(BaseCorpus):
                         recording=recording,
                         custom={"subset": subset},
                     )
-                    print(cut)
 
                     yield cut
