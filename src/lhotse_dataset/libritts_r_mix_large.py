@@ -30,7 +30,7 @@ class LibriTTSRMixLarge(BaseCorpus):
 
     @property
     def shard_size(self) -> int:
-        return 100
+        return 1000
 
     def get_cuts(self) -> Generator[lhotse.MultiCut, None, None]:
         metadata_dir = Path(__file__).parent / "data/libritts_r_mix_large"
