@@ -1,6 +1,7 @@
 import argparse
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 from lhotse import CutSet
 from tqdm import tqdm
@@ -16,13 +17,13 @@ def main(shar_dir: Path) -> None:
     cuts = cuts.filter(lambda c: len(c.supervisions) > 0)  # type: ignore
 
     subsets_samples = {
-        "test_clean": 10000,
-        "dev_clean": 10000,
+        "test_clean": 5000,
+        "dev_clean": 5000,
         "train_clean_100": 100000,
         "train_clean_360": 300000,
     }
 
-    metadata_path = Path("metadata")
+    metadata_path = Path("src/lhotse_dataset/data/libritts_r_mix_large")
     metadata_path.mkdir(parents=True, exist_ok=True)
 
     for subset, samples in subsets_samples.items():
@@ -39,10 +40,12 @@ def main(shar_dir: Path) -> None:
                 if cut_1.supervisions[0].speaker == cut_2.supervisions[0].speaker:
                     continue
 
-                metadata.append(dict(id_1=cut_1.id, id_2=cut_2.id))
+                i = np.random.uniform(0, 1)
+                if i < 0.001:
+                    metadata.append(dict(id_1=cut_1.id, id_2=cut_2.id))
 
         df = pd.DataFrame(metadata)
-        df = df.sample(n=samples, random_state=42)
+        df = df.sample(n=min(samples, len(df)), random_state=42)
         df.to_csv(metadata_path / f"{subset}.csv", index=False)
 
 
