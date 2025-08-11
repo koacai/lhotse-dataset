@@ -55,18 +55,18 @@ class LibriTTSRMixLarge(BaseCorpus):
                         tmp_dir_path
                         / "LibriTTS_R"
                         / subset
-                        / id_1.split("_")[4]
-                        / id_1.split("_")[5]
-                        / f"{'_'.join(id_1.split('_')[4:])}.wav"
+                        / id_1.split("_")[-4]
+                        / id_1.split("_")[-3]
+                        / f"{'_'.join(id_1.split('_')[-4:])}.wav"
                     )
                     id_2 = row.id_2  # type: ignore
                     source_2_path = (
                         tmp_dir_path
                         / "LibriTTS_R"
                         / subset
-                        / id_2.split("_")[4]
-                        / id_2.split("_")[5]
-                        / f"{'_'.join(id_2.split('_')[4:])}.wav"
+                        / id_2.split("_")[-4]
+                        / id_2.split("_")[-3]
+                        / f"{'_'.join(id_2.split('_')[-4:])}.wav"
                     )
 
                     wav_1, sr = sf.read(source_1_path)
