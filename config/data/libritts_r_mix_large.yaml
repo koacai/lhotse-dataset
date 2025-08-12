@@ -1,0 +1,5 @@
+corpus:
+  _target_: lhotse_dataset.LibriTTSRMixLarge
+  libritts_r_shar_dir: /groups/gag51394/users/asai/shar/libritts_r/
+
+shar_dir: /groups/gag51394/users/asai/shar/libritts_r_mix_large
