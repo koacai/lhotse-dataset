@@ -1,5 +1,5 @@
 corpus:
-  _target_: lhotse_dataset.CallHomeJP
+  _target_: lhotse_dataset.CallHomeEn
   email: email # NEED TO CHANGE
   pswd: pswd # NEED TO CHANGE
 
