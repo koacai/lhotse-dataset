@@ -18,7 +18,7 @@ class CallHomeEn(BaseCorpus):
 
     @property
     def url(self) -> str:
-        return "https://ca.talkbank.org/access/CallHome/jpn.html"
+        return "https://ca.talkbank.org/access/CallHome/eng.html"
 
     @property
     def login_url(self) -> str:
