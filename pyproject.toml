@@ -11,6 +11,7 @@ dependencies = [
     "gitpython>=3.1.44",
     "hydra-core>=1.3.2",
     "lhotse>=1.30.3",
+    "librosa>=0.11.0",
     "omegaconf>=2.3.0",
     "pydantic>=2.11.7",
     "soundfile>=0.13.1",
