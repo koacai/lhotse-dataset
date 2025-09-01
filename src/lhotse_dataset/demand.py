@@ -37,6 +37,10 @@ class DEMAND(BaseCorpus):
             "https://zenodo.org/records/1227121/files/TMETRO_48k.zip?download=1",
         ]
 
+    @property
+    def shard_size(self) -> int:
+        return 10
+
     def get_cuts(self) -> Generator[MonoCut, None, None]:
         with tempfile.TemporaryDirectory() as tmp_dir:
             tmp_dir = Path(tmp_dir)
