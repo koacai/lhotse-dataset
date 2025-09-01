@@ -9,6 +9,10 @@ from lhotse_dataset.base import BaseCorpus
 
 class MITEnvironmentalImpulseResponses(BaseCorpus):
     @property
+    def url(self) -> str:
+        return "https://huggingface.co/datasets/davidscripka/MIT_environmental_impulse_responses"
+
+    @property
     def shard_size(self) -> int:
         return 10
 
