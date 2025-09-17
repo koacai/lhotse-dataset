@@ -27,8 +27,8 @@ class LibriTTSRMixLarge(BaseCorpus):
         return {
             "test_clean": 5000,
             "dev_clean": 5000,
-            "train_clean_100": 100000,
-            "train_clean_360": 300000,
+            "train_clean_100": 500000,
+            "train_clean_360": 1500000,
         }
 
     @property
