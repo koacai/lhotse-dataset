@@ -67,7 +67,7 @@ class LibriTTSRMixLarge(BaseCorpus):
                         continue
 
                     i = np.random.uniform(0, 1)
-                    if i < 0.001 and data_count <= samples:
+                    if i < 0.01 and data_count <= samples:
                         wav_1 = cut_1.load_audio()
                         wav_2 = cut_2.load_audio()
                         wav_len = max(wav_1.shape[-1], wav_2.shape[-1])
