@@ -1,0 +1,4 @@
+corpus:
+  _target_: lhotse_dataset.SeamlessInteraction
+
+shar_dir: /groups/gag51394/users/asai/shar/seamless_interaction

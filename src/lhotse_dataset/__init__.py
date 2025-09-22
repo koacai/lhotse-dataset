@@ -19,6 +19,7 @@ from lhotse_dataset.mit_environmental_impulse_responses import (
     MITEnvironmentalImpulseResponses,
 )
 from lhotse_dataset.reazon_speech import ReazonSpeech
+from lhotse_dataset.seamless_interaction import SeamlessInteraction
 from lhotse_dataset.wham_noise import WhamNoise
 
 __all__ = [
@@ -42,4 +43,5 @@ __all__ = [
     "CallHomeEn",
     "MITEnvironmentalImpulseResponses",
     "DEMAND",
+    "SeamlessInteraction",
 ]
