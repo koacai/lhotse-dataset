@@ -55,10 +55,13 @@ class LibriTTSRMixLarge(BaseCorpus):
             cuts_subset = cuts_subset.sort_by_duration()
 
             data_count = 0
+
             for cut_1 in tqdm(cuts_subset.data, desc=subset):
+                if data_count >= samples:
+                    break
+
                 for cut_2 in cuts_subset.data:
-                    if data_count > samples:
-                        data_count = 0
+                    if data_count >= samples:
                         break
 
                     if cut_1.duration < cut_2.duration:
@@ -66,8 +69,8 @@ class LibriTTSRMixLarge(BaseCorpus):
                     if cut_1.supervisions[0].speaker == cut_2.supervisions[0].speaker:
                         continue
 
-                    i = np.random.uniform(0, 1)
-                    if i < 0.001 and data_count <= samples:
+                    # Generate mix with probability (adjust as needed)
+                    if np.random.uniform(0, 1) < 0.01:
                         wav_1 = cut_1.load_audio()
                         wav_2 = cut_2.load_audio()
                         wav_len = max(wav_1.shape[-1], wav_2.shape[-1])
@@ -126,7 +129,3 @@ class LibriTTSRMixLarge(BaseCorpus):
                         )
                         data_count += 1
                         yield cut
-
-                else:
-                    continue
-                break

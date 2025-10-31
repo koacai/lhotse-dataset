@@ -2,6 +2,7 @@ import argparse
 from pathlib import Path
 
 from lhotse import CutSet
+from tqdm import tqdm
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -14,7 +15,10 @@ if __name__ == "__main__":
     )
 
     cuts = CutSet.from_shar({"cuts": cut_paths, "recording": recording_paths})
+    print(cuts)
 
-    for cut in cuts.data:
-        print(cut)
-        break
+    duration = 0
+    for cut in tqdm(cuts.data):
+        duration += cut.duration
+
+    print(f"{duration / 3600} hours")
