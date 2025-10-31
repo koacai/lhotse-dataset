@@ -19,12 +19,12 @@ class LibriTTSR(BaseCorpus):
     def download_url(self) -> dict[str, str]:
         return {
             "dev_clean": "https://www.openslr.org/resources/141/dev_clean.tar.gz",
-            "dev_other": "https://www.openslr.org/resources/141/dev_other.tar.gz",
+            # "dev_other": "https://www.openslr.org/resources/141/dev_other.tar.gz",
             "test_clean": "https://www.openslr.org/resources/141/test_clean.tar.gz",
-            "test_other": "https://www.openslr.org/resources/141/test_other.tar.gz",
+            # "test_other": "https://www.openslr.org/resources/141/test_other.tar.gz",
             "train_clean_100": "https://www.openslr.org/resources/141/train_clean_100.tar.gz",
             "train_clean_360": "https://www.openslr.org/resources/141/train_clean_360.tar.gz",
-            "train_other_500": "https://www.openslr.org/resources/141/train_other_500.tar.gz",
+            # "train_other_500": "https://www.openslr.org/resources/141/train_other_500.tar.gz",
         }
 
     @property
