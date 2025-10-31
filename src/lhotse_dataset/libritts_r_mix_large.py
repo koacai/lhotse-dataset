@@ -13,7 +13,14 @@ from lhotse_dataset.base import BaseCorpus, Language
 
 
 class LibriTTSRMixLarge(BaseCorpus):
-    def __init__(self, libritts_r_shar_dir: str | Path) -> None:
+    def __init__(
+        self,
+        libritts_r_shar_dir: str | Path,
+        num_test_clean: int = 5000,
+        num_dev_clean: int = 5000,
+        num_train_clean_100: int = 100000,
+        num_train_clean_360: int = 300000,
+    ) -> None:
         super(LibriTTSRMixLarge, self).__init__()
 
         if isinstance(libritts_r_shar_dir, str):
@@ -22,13 +29,18 @@ class LibriTTSRMixLarge(BaseCorpus):
             shar_dir = libritts_r_shar_dir
         self.shar_dir = shar_dir
 
+        self.num_test_clean = num_test_clean
+        self.num_dev_clean = num_dev_clean
+        self.num_train_clean_100 = num_train_clean_100
+        self.num_train_clean_360 = num_train_clean_360
+
     @property
     def subset_samples(self) -> dict[str, int]:
         return {
-            "test_clean": 5000,
-            "dev_clean": 5000,
-            "train_clean_100": 100000,
-            "train_clean_360": 300000,
+            "test_clean": self.num_test_clean,
+            "dev_clean": self.num_dev_clean,
+            "train_clean_100": self.num_train_clean_100,
+            "train_clean_360": self.num_train_clean_360,
         }
 
     @property
