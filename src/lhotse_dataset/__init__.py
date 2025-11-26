@@ -15,9 +15,6 @@ from lhotse_dataset.librispeech import LibriSpeech
 from lhotse_dataset.libritts_r import LibriTTSR
 from lhotse_dataset.libritts_r_mix_clean import LibriTTSRMixClean
 from lhotse_dataset.libritts_r_mix_large import LibriTTSRMixLarge
-from lhotse_dataset.mit_environmental_impulse_responses import (
-    MITEnvironmentalImpulseResponses,
-)
 from lhotse_dataset.reazon_speech import ReazonSpeech
 from lhotse_dataset.wham_noise import WhamNoise
 
@@ -40,6 +37,16 @@ __all__ = [
     "LibriTTSRMixClean",
     "LibriTTSRMixLarge",
     "CallHomeEn",
-    "MITEnvironmentalImpulseResponses",
+    # "MITEnvironmentalImpulseResponses",  # Disabled due to torchcodec issues
     "DEMAND",
 ]
+
+
+def __getattr__(name):
+    if name == "MITEnvironmentalImpulseResponses":
+        from lhotse_dataset.mit_environmental_impulse_responses import (
+            MITEnvironmentalImpulseResponses,
+        )
+
+        return MITEnvironmentalImpulseResponses
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
